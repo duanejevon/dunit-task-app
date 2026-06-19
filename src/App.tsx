@@ -1,4 +1,5 @@
 import { BoardSwitcher } from "./components/BoardSwitcher";
+import { KanbanBoard } from "./components/KanbanBoard";
 import { useBoards } from "./state/useBoards";
 
 function App() {
@@ -20,7 +21,10 @@ function App() {
         {loading ? (
           <p>Loading…</p>
         ) : activeBoard ? (
-          <h1>{activeBoard.name}</h1>
+          <>
+            <h1>{activeBoard.name}</h1>
+            <KanbanBoard boardId={activeBoard.id} />
+          </>
         ) : (
           <p>No boards yet — create one to get started.</p>
         )}
