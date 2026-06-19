@@ -6,6 +6,7 @@ export interface CardFormValues {
   title: string;
   description: string;
   color: string;
+  due_date: string | null;
 }
 
 interface CardFormProps {
@@ -19,12 +20,13 @@ export function CardForm({ initial, submitLabel, onSubmit, onCancel }: CardFormP
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [color, setColor] = useState(initial?.color ?? CARD_COLORS[0]);
+  const [dueDate, setDueDate] = useState(initial?.due_date ?? "");
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = title.trim();
     if (!trimmed) return;
-    onSubmit({ title: trimmed, description, color });
+    onSubmit({ title: trimmed, description, color, due_date: dueDate || null });
   }
 
   return (
@@ -42,6 +44,19 @@ export function CardForm({ initial, submitLabel, onSubmit, onCancel }: CardFormP
         rows={2}
       />
       <CardColorPicker value={color} onChange={setColor} />
+      <div className="card-form-due">
+        <input
+          type="datetime-local"
+          aria-label="Due date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+        {dueDate && (
+          <button type="button" className="card-form-due-clear" onClick={() => setDueDate("")}>
+            Clear
+          </button>
+        )}
+      </div>
       <div className="card-form-actions">
         <button type="submit">{submitLabel}</button>
         <button type="button" onClick={onCancel}>

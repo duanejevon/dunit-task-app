@@ -46,8 +46,22 @@ try {
   assert.strictEqual(doingCards[0].id, cardB.id);
   assert.strictEqual(doingCards[0].position, 0);
 
+  // Due dates persist and are queryable across all boards regardless of
+  // which one is "active" in the UI.
+  const dueDate = "2026-01-01T09:00";
+  store.updateCard(cardA.id, { due_date: dueDate });
   store.close();
-  console.log("smoke-db: OK — data and drag-and-drop reordering persisted across store reopen");
+
+  store = createStore(dbPath);
+  const dueCards = store.listCardsWithDueDates();
+  assert.strictEqual(dueCards.length, 1);
+  assert.strictEqual(dueCards[0].id, cardA.id);
+  assert.strictEqual(dueCards[0].due_date, dueDate);
+
+  store.close();
+  console.log(
+    "smoke-db: OK — data, drag-and-drop reordering, and due dates persisted across store reopen",
+  );
 } finally {
   fs.rmSync(path.dirname(dbPath), { recursive: true, force: true });
 }

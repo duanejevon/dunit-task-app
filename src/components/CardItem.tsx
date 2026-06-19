@@ -10,6 +10,17 @@ interface CardItemProps {
   onDelete: (id: number) => void;
 }
 
+function formatDueDate(dueDate: string): string {
+  const date = new Date(dueDate);
+  if (Number.isNaN(date.getTime())) return dueDate;
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export function CardItem({ card, onUpdate, onDelete }: CardItemProps) {
   const [editing, setEditing] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -63,6 +74,15 @@ export function CardItem({ card, onUpdate, onDelete }: CardItemProps) {
         </button>
       </div>
       {card.description && <p className="kanban-card-description">{card.description}</p>}
+      {card.due_date && (
+        <span
+          className={
+            "kanban-card-due" + (new Date(card.due_date).getTime() <= Date.now() ? " overdue" : "")
+          }
+        >
+          {formatDueDate(card.due_date)}
+        </span>
+      )}
     </div>
   );
 }

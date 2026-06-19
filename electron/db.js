@@ -85,6 +85,9 @@ function createStore(dbPath) {
     listCards(columnId) {
       return db.prepare("SELECT * FROM cards WHERE column_id = ? ORDER BY position").all(columnId);
     },
+    listCardsWithDueDates() {
+      return db.prepare("SELECT * FROM cards WHERE due_date IS NOT NULL").all();
+    },
     listCardsByBoard(boardId) {
       return db
         .prepare(
