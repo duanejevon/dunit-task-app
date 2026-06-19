@@ -1,11 +1,13 @@
 import { BoardSwitcher } from "./components/BoardSwitcher";
 import { KanbanBoard } from "./components/KanbanBoard";
 import { useBoards } from "./state/useBoards";
+import { useDueDateReminders } from "./state/useDueDateReminders";
 
 function App() {
   const { boards, activeBoardId, loading, createBoard, renameBoard, deleteBoard, switchBoard } =
     useBoards();
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
+  useDueDateReminders();
 
   return (
     <div className="app-shell">

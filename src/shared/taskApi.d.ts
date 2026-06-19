@@ -15,6 +15,7 @@ export interface TaskApi {
   };
   cards: {
     list(columnId: number): Promise<Card[]>;
+    listWithDueDates(): Promise<Card[]>;
     listByBoard(boardId: number): Promise<Card[]>;
     create(columnId: number, input: NewCardInput): Promise<Card>;
     update(id: number, fields: CardUpdateInput): Promise<Card | null>;
