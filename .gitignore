@@ -3,4 +3,5 @@ dist/
 dist-electron/
 release/
 *.log
+*.tsbuildinfo
 .claude/settings.local.json

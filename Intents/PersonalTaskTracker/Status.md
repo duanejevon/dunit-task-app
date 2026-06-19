@@ -4,7 +4,7 @@
 | No. | Name | Status | Est. | Actual | Notes |
 |----:|------|--------|-----:|-------:|-------|
 | 1   | DecideTechStack | Done | 1h | | Electron + React + TS + better-sqlite3 |
-| 2   | ScaffoldApp | Todo | 1.5h | | |
+| 2   | ScaffoldApp | Done | 1.5h | | Electron+React+TS scaffold built; build verified, GUI launch not visually confirmed in sandbox |
 | 3   | DataModelAndStorage | Todo | 2h | | |
 | 4   | BoardSwitcherUI | Todo | 1.5h | | |
 | 5   | KanbanColumnsUI | Todo | 1.5h | | |
