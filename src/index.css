@@ -8,5 +8,87 @@ body {
 }
 
 .app-shell {
+  display: flex;
+  height: 100vh;
+}
+
+.board-switcher {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(127, 127, 127, 0.3);
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.board-switcher h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.board-switcher ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.board-switcher li {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.board-switcher li.active .board-name {
+  font-weight: 700;
+}
+
+.board-name,
+.board-name-input {
+  flex: 1;
+  text-align: left;
+  padding: 0.4rem;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.board-name {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.board-name:hover {
+  background: rgba(127, 127, 127, 0.15);
+}
+
+.board-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.board-delete:hover {
+  opacity: 1;
+}
+
+.board-create {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.board-create input {
+  flex: 1;
+  min-width: 0;
+}
+
+.board-content {
+  flex: 1;
   padding: 2rem;
+  overflow-y: auto;
 }
