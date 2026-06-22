@@ -10,7 +10,7 @@
 | 5   | HamburgerAppMenu | Done | 1.5h | | Native menu hidden; hamburger panel houses background picker |
 | 6   | BoardIconPicker | Done | 2h | | Emoji grid + custom image icon per board, verified live |
 | 7   | SelectedBoardEmphasis | Done | 1h | | Active board name more opaque than background |
-| 8   | PolishAndReview | Todo | 1.5h | | Cross-cutting pass + user sign-off |
+| 8   | PolishAndReview | In progress | 1.5h | | Automated pass done; awaiting user on-device sign-off |
 
 > Claude may update **Status** column. Human owns **Actual** column.
 
