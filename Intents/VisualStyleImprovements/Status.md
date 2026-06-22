@@ -6,7 +6,7 @@
 | 1   | FluentDesignTokens | Done | 1.5h | | Fluent blue accent, radius/shadow tokens applied to chrome |
 | 2   | TranslucentSurfaces | Done | 2h | | Glass panels + blur, tested against real default.jpg (provisional hookup) |
 | 3   | BackgroundImageInfra | Done | 2h | | settings table + IPC (get/set builtin/browse); verified live + restart |
-| 4   | BackgroundImageUI | Todo | 2h | | Faded render + gallery/browse picker UI |
+| 4   | BackgroundImageUI | Done | 2h | | Dynamic background + picker UI (provisional sidebar placement) |
 | 5   | HamburgerAppMenu | Todo | 1.5h | | Hide native menu, add hamburger app menu |
 | 6   | BoardIconPicker | Todo | 2h | | Emoji + custom image icon per board |
 | 7   | SelectedBoardEmphasis | Todo | 1h | | Active board name more opaque than background |

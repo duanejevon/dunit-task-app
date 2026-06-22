@@ -1,5 +1,6 @@
 import { useState, type FormEvent, type KeyboardEvent } from "react";
 import type { Board } from "../shared/types";
+import { BackgroundPicker } from "./BackgroundPicker";
 
 interface BoardSwitcherProps {
   boards: Board[];
@@ -96,6 +97,9 @@ export function BoardSwitcher({
         />
         <button type="submit">Add</button>
       </form>
+      {/* Provisional placement — Intent 5 (HamburgerAppMenu) relocates this
+          into the app menu instead of the always-visible sidebar. */}
+      <BackgroundPicker />
     </nav>
   );
 }

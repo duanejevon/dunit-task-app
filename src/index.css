@@ -32,6 +32,7 @@
      opaque (background always shows through) or so thin it's illegible. */
   --blur-md: 16px;
   --bg-overlay: rgba(255, 255, 255, 0.45);
+  --app-bg-image: none;
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.85rem;
@@ -41,11 +42,9 @@
 
 body {
   margin: 0;
-  /* Provisional: hardcoded default image for translucency testing.
-     Intent 4 (BackgroundImageUI) replaces this with the dynamic,
-     user-selectable background + overlay. */
-  background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)),
-    url("./assets/backgrounds/default.jpg");
+  /* --app-bg-image is set at runtime by useBackground.ts based on the
+     user's chosen built-in or custom background. */
+  background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), var(--app-bg-image, none);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -141,6 +140,48 @@ h1, h2, h3 {
 .board-create input {
   flex: 1;
   min-width: 0;
+}
+
+.background-picker {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.background-picker h2 {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+}
+
+.background-picker-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.background-thumb,
+.background-thumb-browse {
+  width: 48px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.background-thumb.selected {
+  border-color: var(--color-accent);
+}
+
+.background-thumb-browse {
+  background: var(--surface-1);
+  font-size: var(--font-size-xs);
+  color: inherit;
 }
 
 .board-content {
@@ -403,7 +444,7 @@ button {
   border-radius: var(--radius-sm);
 }
 
-button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary) {
+button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse) {
   background: var(--color-accent);
   color: #fff;
   border: none;
@@ -412,7 +453,7 @@ button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add
   transition: background-color 0.15s ease;
 }
 
-button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary):hover {
+button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse):hover {
   background: var(--color-accent-hover);
 }
 
