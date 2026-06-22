@@ -44,7 +44,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  const dbPath = path.join(app.getPath("userData"), "taskapp.db");
+  const dbPath = path.join(app.getPath("userData"), "dunit.db");
   store = createStore(dbPath);
   registerIpcHandlers();
   createWindow();
