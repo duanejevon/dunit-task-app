@@ -1,5 +1,5 @@
 {
-  "name": "taskapp",
+  "name": "dunit",
   "version": "1.0.0",
   "description": "Personal offline kanban task tracker",
   "desktopName": "personal-task-tracker.desktop",
@@ -16,12 +16,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Duane Hughes",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "commonjs",
   "build": {
-    "appId": "com.duanejevon.taskapp",
-    "productName": "Personal Task Tracker",
+    "appId": "com.duanejevon.dunit",
+    "productName": "DunIT - Personal KanBan Task App",
     "icon": "build/icon.png",
     "files": [
       "dist/**",

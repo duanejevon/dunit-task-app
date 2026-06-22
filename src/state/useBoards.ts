@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Board } from "../shared/types";
 import { toErrorMessage } from "./errorMessage";
 
-const ACTIVE_BOARD_KEY = "taskapp:activeBoardId";
+const ACTIVE_BOARD_KEY = "dunit:activeBoardId";
 
 export function useBoards() {
   const [boards, setBoards] = useState<Board[]>([]);
