@@ -39,6 +39,11 @@ function createStore(dbPath) {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    );
   `);
 
   return {
@@ -141,6 +146,15 @@ function createStore(dbPath) {
         ids.forEach((id, index) => setPosition.run(columnId, index, id));
       });
       applyAll(cardIds);
+    },
+
+    getSetting(key) {
+      return db.prepare("SELECT value FROM settings WHERE key = ?").get(key)?.value ?? null;
+    },
+    setSetting(key, value) {
+      db.prepare(
+        "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+      ).run(key, value);
     },
   };
 }

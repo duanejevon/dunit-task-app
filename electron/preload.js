@@ -23,4 +23,9 @@ contextBridge.exposeInMainWorld("taskApi", {
     reorderColumn: (columnId, cardIds) =>
       ipcRenderer.invoke("cards:reorderColumn", columnId, cardIds),
   },
+  settings: {
+    getBackground: () => ipcRenderer.invoke("settings:getBackground"),
+    setBuiltinBackground: (id) => ipcRenderer.invoke("settings:setBuiltinBackground", id),
+    browseForBackground: () => ipcRenderer.invoke("settings:browseForBackground"),
+  },
 });

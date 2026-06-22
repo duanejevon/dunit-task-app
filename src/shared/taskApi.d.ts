@@ -1,4 +1,4 @@
-import type { Board, Card, CardUpdateInput, Column, NewCardInput } from "./types";
+import type { BackgroundSelection, Board, Card, CardUpdateInput, Column, NewCardInput } from "./types";
 
 export interface TaskApi {
   boards: {
@@ -21,6 +21,11 @@ export interface TaskApi {
     update(id: number, fields: CardUpdateInput): Promise<Card | null>;
     delete(id: number): Promise<void>;
     reorderColumn(columnId: number, cardIds: number[]): Promise<void>;
+  };
+  settings: {
+    getBackground(): Promise<BackgroundSelection>;
+    setBuiltinBackground(id: string): Promise<BackgroundSelection>;
+    browseForBackground(): Promise<BackgroundSelection | null>;
   };
 }
 

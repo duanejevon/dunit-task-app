@@ -69,9 +69,19 @@ try {
   assert.strictEqual(dueCards[0].id, cardA.id);
   assert.strictEqual(dueCards[0].due_date, dueDate);
 
+  // Settings (e.g. the chosen background image reference) persist the same way.
+  assert.strictEqual(store.getSetting("backgroundImage"), null);
+  store.setSetting("backgroundImage", "builtin:default");
+  store.close();
+
+  store = createStore(dbPath);
+  assert.strictEqual(store.getSetting("backgroundImage"), "builtin:default");
+  store.setSetting("backgroundImage", "custom:abc123.jpg");
+  assert.strictEqual(store.getSetting("backgroundImage"), "custom:abc123.jpg");
+
   store.close();
   console.log(
-    "smoke-db: OK — data, drag-and-drop reordering, and due dates persisted across store reopen",
+    "smoke-db: OK — data, drag-and-drop reordering, due dates, and settings persisted across store reopen",
   );
 } finally {
   fs.rmSync(path.dirname(dbPath), { recursive: true, force: true });

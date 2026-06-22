@@ -40,3 +40,5 @@ export interface CardUpdateInput {
   position?: number;
   column_id?: number;
 }
+
+export type BackgroundSelection = { type: "builtin"; id: string } | { type: "custom"; url: string };
