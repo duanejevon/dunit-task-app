@@ -1,6 +1,6 @@
 # DunIT - Personal KanBan Task App
 
-A fully offline, desktop kanban board for personal task tracking. Run
+A fully offline, desktop kanban board for personal task tracking, built using Claude code. Run
 multiple boards (one per project), each with its own columns, colored
 cards, due dates, and reminders — all stored locally, no account or
 network connection required.
