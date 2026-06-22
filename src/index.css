@@ -19,14 +19,19 @@
   --color-danger-bg: rgba(196, 43, 28, 0.12);
   --color-danger-border: rgba(196, 43, 28, 0.4);
 
-  --surface-0: rgba(127, 127, 127, 0.06);
-  --surface-1: rgba(127, 127, 127, 0.12);
-  --surface-2: rgba(127, 127, 127, 0.18);
+  --surface-0: rgba(127, 127, 127, 0.16);
+  --surface-1: rgba(127, 127, 127, 0.26);
+  --surface-2: rgba(127, 127, 127, 0.3);
   --border-subtle: rgba(127, 127, 127, 0.25);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 1.5px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  /* Frosted-glass panels: alpha clamped so a surface never reads as fully
+     opaque (background always shows through) or so thin it's illegible. */
+  --blur-md: 16px;
+  --bg-overlay: rgba(255, 255, 255, 0.45);
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.85rem;
@@ -36,6 +41,14 @@
 
 body {
   margin: 0;
+  /* Provisional: hardcoded default image for translucency testing.
+     Intent 4 (BackgroundImageUI) replaces this with the dynamic,
+     user-selectable background + overlay. */
+  background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+    url("./assets/backgrounds/default.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 h1, h2, h3 {
@@ -50,6 +63,8 @@ h1, h2, h3 {
 .board-switcher {
   width: 230px;
   flex-shrink: 0;
+  background: var(--surface-0);
+  backdrop-filter: blur(var(--blur-md));
   border-right: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-sm);
   padding: var(--space-4);
@@ -156,6 +171,7 @@ h1, h2, h3 {
   flex-shrink: 0;
   box-sizing: border-box;
   background: var(--surface-0);
+  backdrop-filter: blur(var(--blur-md));
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -220,6 +236,7 @@ h1, h2, h3 {
 
 .kanban-card {
   background: var(--surface-1);
+  backdrop-filter: blur(var(--blur-md));
   border-left: 4px solid #a3a3a3;
   border-radius: var(--radius-md);
   padding: var(--space-2) var(--space-3);
