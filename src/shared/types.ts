@@ -3,6 +3,8 @@ export interface Board {
   name: string;
   position: number;
   created_at: string;
+  // A raw emoji character, a file:// URL for a custom image, or null for none.
+  icon: string | null;
 }
 
 export interface Column {

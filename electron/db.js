@@ -46,6 +46,13 @@ function createStore(dbPath) {
     );
   `);
 
+  // Migration: `icon` was added to `boards` after initial release, so
+  // CREATE TABLE IF NOT EXISTS alone won't add it to pre-existing DBs.
+  const boardColumns = db.prepare("PRAGMA table_info(boards)").all();
+  if (!boardColumns.some((c) => c.name === "icon")) {
+    db.exec("ALTER TABLE boards ADD COLUMN icon TEXT");
+  }
+
   return {
     close() {
       db.close();
@@ -70,6 +77,10 @@ function createStore(dbPath) {
     },
     deleteBoard(id) {
       db.prepare("DELETE FROM boards WHERE id = ?").run(id);
+    },
+    setBoardIcon(id, icon) {
+      db.prepare("UPDATE boards SET icon = ? WHERE id = ?").run(icon, id);
+      return db.prepare("SELECT * FROM boards WHERE id = ?").get(id);
     },
 
     listColumns(boardId) {

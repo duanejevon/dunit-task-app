@@ -2,6 +2,7 @@ import { useState, type FormEvent, type KeyboardEvent } from "react";
 import type { Board } from "../shared/types";
 import type { useBackground } from "../state/useBackground";
 import { AppMenu } from "./AppMenu";
+import { BoardIconPicker } from "./BoardIconPicker";
 
 interface BoardSwitcherProps {
   boards: Board[];
@@ -10,6 +11,8 @@ interface BoardSwitcherProps {
   onCreate: (name: string) => void;
   onRename: (id: number, name: string) => void;
   onDelete: (id: number) => void;
+  onSetIcon: (id: number, icon: string) => void;
+  onBrowseIcon: (id: number) => void;
   background: ReturnType<typeof useBackground>;
 }
 
@@ -20,6 +23,8 @@ export function BoardSwitcher({
   onCreate,
   onRename,
   onDelete,
+  onSetIcon,
+  onBrowseIcon,
   background,
 }: BoardSwitcherProps) {
   const [newName, setNewName] = useState("");
@@ -65,6 +70,7 @@ export function BoardSwitcher({
       <ul>
         {boards.map((board) => (
           <li key={board.id} className={board.id === activeBoardId ? "active" : ""}>
+            <BoardIconPicker board={board} onSetIcon={onSetIcon} onBrowseIcon={onBrowseIcon} />
             {editingId === board.id ? (
               <input
                 autoFocus

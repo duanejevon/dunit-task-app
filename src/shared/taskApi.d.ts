@@ -6,6 +6,8 @@ export interface TaskApi {
     create(name: string): Promise<Board>;
     rename(id: number, name: string): Promise<Board>;
     delete(id: number): Promise<void>;
+    setIcon(id: number, icon: string): Promise<Board>;
+    browseIcon(id: number): Promise<Board | null>;
   };
   columns: {
     list(boardId: number): Promise<Column[]>;

@@ -69,6 +69,15 @@ try {
   assert.strictEqual(dueCards[0].id, cardA.id);
   assert.strictEqual(dueCards[0].due_date, dueDate);
 
+  // Board icon: nullable by default, settable, and persists across reopen
+  // (also exercises the icon-column migration path on every store creation).
+  assert.strictEqual(boards[0].icon, null);
+  store.setBoardIcon(board.id, "🚀");
+  store.close();
+
+  store = createStore(dbPath);
+  assert.strictEqual(store.listBoards()[0].icon, "🚀");
+
   // Settings (e.g. the chosen background image reference) persist the same way.
   assert.strictEqual(store.getSetting("backgroundImage"), null);
   store.setSetting("backgroundImage", "builtin:default");

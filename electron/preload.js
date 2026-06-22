@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld("taskApi", {
     create: (name) => ipcRenderer.invoke("boards:create", name),
     rename: (id, name) => ipcRenderer.invoke("boards:rename", id, name),
     delete: (id) => ipcRenderer.invoke("boards:delete", id),
+    setIcon: (id, icon) => ipcRenderer.invoke("boards:setIcon", id, icon),
+    browseIcon: (id) => ipcRenderer.invoke("boards:browseIcon", id),
   },
   columns: {
     list: (boardId) => ipcRenderer.invoke("columns:list", boardId),

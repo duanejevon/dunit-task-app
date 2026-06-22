@@ -81,6 +81,30 @@ export function useBoards() {
     setActiveBoardId(id);
   }, []);
 
+  const setBoardIcon = useCallback(
+    async (id: number, icon: string) => {
+      try {
+        await window.taskApi.boards.setIcon(id, icon);
+        await refresh();
+      } catch (err) {
+        setError(toErrorMessage(err));
+      }
+    },
+    [refresh],
+  );
+
+  const browseBoardIcon = useCallback(
+    async (id: number) => {
+      try {
+        const updated = await window.taskApi.boards.browseIcon(id);
+        if (updated) await refresh();
+      } catch (err) {
+        setError(toErrorMessage(err));
+      }
+    },
+    [refresh],
+  );
+
   return {
     boards,
     activeBoardId,
@@ -90,6 +114,8 @@ export function useBoards() {
     renameBoard,
     deleteBoard,
     switchBoard,
+    setBoardIcon,
+    browseBoardIcon,
     retry: refresh,
   };
 }

@@ -30,11 +30,37 @@ function resolveBackgroundSelection(raw) {
   return null;
 }
 
+// Shared by background + board-icon pickers: prompt for an image, copy it
+// into a userData subdirectory under a generated name, return both the
+// filename (for tagged-string persistence) and a ready-to-use file:// URL.
+async function pickAndCopyImage(event, subdir) {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+    title: "Choose an image",
+    properties: ["openFile"],
+    filters: BACKGROUND_FILE_FILTERS,
+  });
+  if (canceled || filePaths.length === 0) return null;
+
+  const dir = path.join(app.getPath("userData"), subdir);
+  fs.mkdirSync(dir, { recursive: true });
+  const filename = `${crypto.randomUUID()}${path.extname(filePaths[0])}`;
+  const destPath = path.join(dir, filename);
+  fs.copyFileSync(filePaths[0], destPath);
+  return { filename, url: pathToFileURL(destPath).toString() };
+}
+
 function registerIpcHandlers() {
   ipcMain.handle("boards:list", () => store.listBoards());
   ipcMain.handle("boards:create", (_e, name) => store.createBoard(name));
   ipcMain.handle("boards:rename", (_e, id, name) => store.renameBoard(id, name));
   ipcMain.handle("boards:delete", (_e, id) => store.deleteBoard(id));
+  ipcMain.handle("boards:setIcon", (_e, id, icon) => store.setBoardIcon(id, icon));
+  ipcMain.handle("boards:browseIcon", async (event, id) => {
+    const picked = await pickAndCopyImage(event, "board-icons");
+    if (!picked) return null;
+    return store.setBoardIcon(id, picked.url);
+  });
 
   ipcMain.handle("columns:list", (_e, boardId) => store.listColumns(boardId));
   ipcMain.handle("columns:create", (_e, boardId, name) => store.createColumn(boardId, name));
@@ -68,21 +94,10 @@ function registerIpcHandlers() {
   });
 
   ipcMain.handle("settings:browseForBackground", async (event) => {
-    const win = BrowserWindow.fromWebContents(event.sender);
-    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-      title: "Choose a background image",
-      properties: ["openFile"],
-      filters: BACKGROUND_FILE_FILTERS,
-    });
-    if (canceled || filePaths.length === 0) return null;
-
-    const dir = backgroundsDir();
-    fs.mkdirSync(dir, { recursive: true });
-    const filename = `${crypto.randomUUID()}${path.extname(filePaths[0])}`;
-    fs.copyFileSync(filePaths[0], path.join(dir, filename));
-
-    store.setSetting(BACKGROUND_SETTING_KEY, `custom:${filename}`);
-    return resolveBackgroundSelection(`custom:${filename}`);
+    const picked = await pickAndCopyImage(event, "backgrounds");
+    if (!picked) return null;
+    store.setSetting(BACKGROUND_SETTING_KEY, `custom:${picked.filename}`);
+    return { type: "custom", url: picked.url };
   });
 }
 

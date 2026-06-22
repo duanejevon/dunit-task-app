@@ -137,6 +137,81 @@ h1, h2, h3 {
   gap: var(--space-1);
 }
 
+.board-icon-picker {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.board-icon-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.board-icon-trigger:hover {
+  background: var(--surface-1);
+}
+
+.board-icon-image {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+.board-icon-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  margin-top: var(--space-2);
+  width: 200px;
+  background: var(--surface-1);
+  backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-3);
+}
+
+.board-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.board-icon-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.board-icon-option:hover {
+  background: var(--surface-2);
+}
+
+.board-icon-browse {
+  width: 100%;
+}
+
 .board-switcher li.active .board-name {
   font-weight: 700;
   color: var(--color-accent);
@@ -490,7 +565,7 @@ button {
   border-radius: var(--radius-sm);
 }
 
-button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger) {
+button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger, .board-icon-trigger, .board-icon-option) {
   background: var(--color-accent);
   color: #fff;
   border: none;
@@ -499,7 +574,7 @@ button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add
   transition: background-color 0.15s ease;
 }
 
-button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger):hover {
+button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger, .board-icon-trigger, .board-icon-option):hover {
   background: var(--color-accent-hover);
 }
 

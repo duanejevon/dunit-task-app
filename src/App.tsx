@@ -15,6 +15,8 @@ function App() {
     renameBoard,
     deleteBoard,
     switchBoard,
+    setBoardIcon,
+    browseBoardIcon,
     retry,
   } = useBoards();
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
@@ -32,6 +34,8 @@ function App() {
         onCreate={createBoard}
         onRename={renameBoard}
         onDelete={deleteBoard}
+        onSetIcon={setBoardIcon}
+        onBrowseIcon={browseBoardIcon}
         background={background}
       />
       <main className="board-content">
