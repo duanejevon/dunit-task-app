@@ -140,6 +140,24 @@ h1, h2, h3 {
   gap: var(--space-1);
 }
 
+.board-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.4;
+  cursor: grab;
+  touch-action: none;
+}
+
+.board-drag-handle:hover {
+  opacity: 0.8;
+}
+
 .board-icon-picker {
   position: relative;
   flex-shrink: 0;

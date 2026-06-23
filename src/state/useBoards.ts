@@ -105,6 +105,27 @@ export function useBoards() {
     [refresh],
   );
 
+  // Reorders local state immediately so the drag feels responsive, then
+  // persists; refreshes either way to resync with storage (and roll back
+  // the optimistic order if the IPC call failed).
+  const reorderBoards = useCallback(
+    async (boardIds: number[]) => {
+      setBoards((current) => {
+        const byId = new Map(current.map((b) => [b.id, b]));
+        const reordered = boardIds.map((id) => byId.get(id)).filter((b) => b != null);
+        return reordered.length === current.length ? reordered : current;
+      });
+      try {
+        await window.taskApi.boards.reorder(boardIds);
+      } catch (err) {
+        setError(toErrorMessage(err));
+      } finally {
+        await refresh();
+      }
+    },
+    [refresh],
+  );
+
   return {
     boards,
     activeBoardId,
@@ -116,6 +137,7 @@ export function useBoards() {
     switchBoard,
     setBoardIcon,
     browseBoardIcon,
+    reorderBoards,
     retry: refresh,
   };
 }

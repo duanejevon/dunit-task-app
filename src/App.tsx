@@ -17,6 +17,7 @@ function App() {
     switchBoard,
     setBoardIcon,
     browseBoardIcon,
+    reorderBoards,
     retry,
   } = useBoards();
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
@@ -36,6 +37,7 @@ function App() {
         onDelete={deleteBoard}
         onSetIcon={setBoardIcon}
         onBrowseIcon={browseBoardIcon}
+        onReorder={reorderBoards}
         background={background}
       />
       <main className="board-content">
