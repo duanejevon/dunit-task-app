@@ -10,7 +10,13 @@ import {
   type DragOverEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 import type { Card, Column } from "../shared/types";
 import { useBoardCards, type CardsByColumn } from "../state/useBoardCards";
@@ -20,6 +26,21 @@ import { ErrorBanner } from "./ErrorBanner";
 
 interface KanbanBoardProps {
   boardId: number;
+}
+
+// Columns are dragged as a flat horizontal list, separately from cards
+// (which drag across columns). Both share one DndContext, so column
+// sortable ids are prefixed to keep them out of the card id namespace —
+// otherwise a column and a card with the same numeric id would collide.
+const COLUMN_ID_PREFIX = "col-";
+
+function columnSortableId(id: number): string {
+  return `${COLUMN_ID_PREFIX}${id}`;
+}
+
+function parseColumnId(id: number | string): number | null {
+  if (typeof id !== "string" || !id.startsWith(COLUMN_ID_PREFIX)) return null;
+  return Number(id.slice(COLUMN_ID_PREFIX.length));
 }
 
 function findContainerId(cardsByColumn: CardsByColumn, id: number | string): number | null {
@@ -42,6 +63,71 @@ function ColumnDropZone({ columnId, children }: { columnId: number; children: Re
   );
 }
 
+interface SortableColumnItemProps {
+  column: Column;
+  children: ReactNode;
+  editing: boolean;
+  editingName: string;
+  onStartRename: (column: Column) => void;
+  onEditingNameChange: (name: string) => void;
+  onCommitRename: (id: number) => void;
+  onRenameKeyDown: (e: KeyboardEvent<HTMLInputElement>, id: number) => void;
+  onDelete: (column: Column) => void;
+}
+
+function SortableColumnItem({
+  column,
+  children,
+  editing,
+  editingName,
+  onStartRename,
+  onEditingNameChange,
+  onCommitRename,
+  onRenameKeyDown,
+  onDelete,
+}: SortableColumnItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: columnSortableId(column.id),
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="kanban-column">
+      <div className="kanban-column-header">
+        <span className="column-drag-handle" aria-label="Drag to reorder" {...attributes} {...listeners}>
+          ⠿
+        </span>
+        {editing ? (
+          <input
+            autoFocus
+            className="column-name-input"
+            value={editingName}
+            onChange={(e) => onEditingNameChange(e.target.value)}
+            onBlur={() => onCommitRename(column.id)}
+            onKeyDown={(e) => onRenameKeyDown(e, column.id)}
+          />
+        ) : (
+          <h3 onDoubleClick={() => onStartRename(column)}>{column.name}</h3>
+        )}
+        <button
+          type="button"
+          className="column-delete"
+          aria-label={`Delete ${column.name}`}
+          onClick={() => onDelete(column)}
+        >
+          ×
+        </button>
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export function KanbanBoard({ boardId }: KanbanBoardProps) {
   const {
     columns,
@@ -50,6 +136,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
     createColumn,
     renameColumn,
     deleteColumn,
+    reorderColumns,
     retry: retryColumns,
   } = useColumns(boardId);
   const {
@@ -109,6 +196,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
   }
 
   function handleDragStart(event: DragStartEvent) {
+    if (parseColumnId(event.active.id) != null) return;
     const id = Number(event.active.id);
     const containerId = findContainerId(cardsByColumn, id);
     const card = containerId != null ? cardsByColumn[containerId]?.find((c) => c.id === id) : null;
@@ -116,6 +204,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
   }
 
   function handleDragOver(event: DragOverEvent) {
+    if (parseColumnId(event.active.id) != null) return;
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -143,8 +232,22 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    setActiveCard(null);
     const { active, over } = event;
+
+    const activeColumnId = parseColumnId(active.id);
+    if (activeColumnId != null) {
+      const overColumnId = over ? parseColumnId(over.id) : null;
+      if (overColumnId != null && overColumnId !== activeColumnId) {
+        const activeIndex = columns.findIndex((c) => c.id === activeColumnId);
+        const overIndex = columns.findIndex((c) => c.id === overColumnId);
+        if (activeIndex !== -1 && overIndex !== -1) {
+          reorderColumns(arrayMove(columns, activeIndex, overIndex).map((c) => c.id));
+        }
+      }
+      return;
+    }
+
+    setActiveCard(null);
     if (!over) return;
 
     const activeId = Number(active.id);
@@ -190,41 +293,34 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
         {columns.length === 0 && (
           <p className="kanban-empty">No columns yet — add one to start organizing tasks.</p>
         )}
-        {columns.map((column) => (
-          <div key={column.id} className="kanban-column">
-            <div className="kanban-column-header">
-              {editingId === column.id ? (
-                <input
-                  autoFocus
-                  className="column-name-input"
-                  value={editingName}
-                  onChange={(e) => setEditingName(e.target.value)}
-                  onBlur={() => commitRename(column.id)}
-                  onKeyDown={(e) => handleRenameKeyDown(e, column.id)}
+        <SortableContext
+          items={columns.map((c) => columnSortableId(c.id))}
+          strategy={horizontalListSortingStrategy}
+        >
+          {columns.map((column) => (
+            <SortableColumnItem
+              key={column.id}
+              column={column}
+              editing={editingId === column.id}
+              editingName={editingName}
+              onStartRename={startRename}
+              onEditingNameChange={setEditingName}
+              onCommitRename={commitRename}
+              onRenameKeyDown={handleRenameKeyDown}
+              onDelete={handleDeleteColumn}
+            >
+              <ColumnDropZone columnId={column.id}>
+                <CardList
+                  columnId={column.id}
+                  cards={cardsByColumn[column.id] ?? []}
+                  onCreate={createCard}
+                  onUpdate={updateCard}
+                  onDelete={deleteCard}
                 />
-              ) : (
-                <h3 onDoubleClick={() => startRename(column)}>{column.name}</h3>
-              )}
-              <button
-                type="button"
-                className="column-delete"
-                aria-label={`Delete ${column.name}`}
-                onClick={() => handleDeleteColumn(column)}
-              >
-                ×
-              </button>
-            </div>
-            <ColumnDropZone columnId={column.id}>
-              <CardList
-                columnId={column.id}
-                cards={cardsByColumn[column.id] ?? []}
-                onCreate={createCard}
-                onUpdate={updateCard}
-                onDelete={deleteCard}
-              />
-            </ColumnDropZone>
-          </div>
-        ))}
+              </ColumnDropZone>
+            </SortableColumnItem>
+          ))}
+        </SortableContext>
         <div className="kanban-add-column">
           {addingColumn ? (
             <form onSubmit={handleCreate}>

@@ -384,15 +384,33 @@ h1, h2, h3 {
 .kanban-column-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-1);
   margin-bottom: var(--space-3);
 }
 
 .kanban-column-header h3 {
+  flex: 1;
   margin: 0;
   font-size: var(--font-size-md);
   cursor: text;
+}
+
+.column-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.4;
+  cursor: grab;
+  touch-action: none;
+}
+
+.column-drag-handle:hover {
+  opacity: 0.8;
 }
 
 .column-name-input {

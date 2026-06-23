@@ -62,5 +62,35 @@ export function useColumns(boardId: number | null) {
     [refresh],
   );
 
-  return { columns, loading, error, createColumn, renameColumn, deleteColumn, retry: refresh };
+  // Reorders local state immediately so the drag feels responsive, then
+  // persists; refreshes either way to resync with storage (and roll back
+  // the optimistic order if the IPC call failed).
+  const reorderColumns = useCallback(
+    async (columnIds: number[]) => {
+      setColumns((current) => {
+        const byId = new Map(current.map((c) => [c.id, c]));
+        const reordered = columnIds.map((id) => byId.get(id)).filter((c) => c != null);
+        return reordered.length === current.length ? reordered : current;
+      });
+      try {
+        await window.taskApi.columns.reorder(columnIds);
+      } catch (err) {
+        setError(toErrorMessage(err));
+      } finally {
+        await refresh();
+      }
+    },
+    [refresh],
+  );
+
+  return {
+    columns,
+    loading,
+    error,
+    createColumn,
+    renameColumn,
+    deleteColumn,
+    reorderColumns,
+    retry: refresh,
+  };
 }
