@@ -65,6 +65,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
   } = useBoardCards(boardId);
 
   const [newName, setNewName] = useState("");
+  const [addingColumn, setAddingColumn] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
   const [activeCard, setActiveCard] = useState<Card | null>(null);
@@ -77,6 +78,12 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
     if (!name) return;
     createColumn(name);
     setNewName("");
+    setAddingColumn(false);
+  }
+
+  function cancelAddColumn() {
+    setNewName("");
+    setAddingColumn(false);
   }
 
   function startRename(column: Column) {
@@ -218,14 +225,24 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
             </ColumnDropZone>
           </div>
         ))}
-        <form onSubmit={handleCreate} className="kanban-add-column">
-          <input
-            placeholder="New column name"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-          />
-          <button type="submit">Add column</button>
-        </form>
+        <div className="kanban-add-column">
+          {addingColumn ? (
+            <form onSubmit={handleCreate}>
+              <input
+                autoFocus
+                placeholder="Column name"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={(e) => e.key === "Escape" && cancelAddColumn()}
+              />
+              <button type="submit">Add column</button>
+            </form>
+          ) : (
+            <button type="button" className="add-trigger" onClick={() => setAddingColumn(true)}>
+              + New column
+            </button>
+          )}
+        </div>
       </div>
       <DragOverlay>
         {activeCard && (

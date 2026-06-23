@@ -28,6 +28,7 @@ export function BoardSwitcher({
   background,
 }: BoardSwitcherProps) {
   const [newName, setNewName] = useState("");
+  const [addingBoard, setAddingBoard] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState("");
 
@@ -37,6 +38,12 @@ export function BoardSwitcher({
     if (!name) return;
     onCreate(name);
     setNewName("");
+    setAddingBoard(false);
+  }
+
+  function cancelAddBoard() {
+    setNewName("");
+    setAddingBoard(false);
   }
 
   function startRename(board: Board) {
@@ -101,14 +108,22 @@ export function BoardSwitcher({
           </li>
         ))}
       </ul>
-      <form onSubmit={handleCreate} className="board-create">
-        <input
-          placeholder="New board name"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-        />
-        <button type="submit">Add</button>
-      </form>
+      {addingBoard ? (
+        <form onSubmit={handleCreate} className="board-create">
+          <input
+            autoFocus
+            placeholder="Board name"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => e.key === "Escape" && cancelAddBoard()}
+          />
+          <button type="submit">Add</button>
+        </form>
+      ) : (
+        <button type="button" className="add-trigger" onClick={() => setAddingBoard(true)}>
+          + New board
+        </button>
+      )}
     </nav>
   );
 }
