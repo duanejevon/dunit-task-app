@@ -82,13 +82,13 @@ export function CardItem({ card, onUpdate, onDelete }: CardItemProps) {
           // unusable ("readonly"). Stop pointer/click events here from reaching the
           // card's drag listeners and edit handler.
           <div
-            className="card-delete-confirm"
+            className="delete-confirm"
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
-              className="card-delete-confirm-yes"
+              className="delete-confirm-yes"
               aria-label={`Confirm delete ${card.title}`}
               onClick={() => onDelete(card.id)}
             >
