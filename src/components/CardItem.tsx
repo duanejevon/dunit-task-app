@@ -35,6 +35,7 @@ function formatDueDate(dueDate: string): string {
 
 export function CardItem({ card, onUpdate, onDelete }: CardItemProps) {
   const [editing, setEditing] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id,
   });
@@ -68,28 +69,53 @@ export function CardItem({ card, onUpdate, onDelete }: CardItemProps) {
       ref={setNodeRef}
       className="kanban-card"
       style={style}
-      onClick={() => setEditing(true)}
+      onClick={() => !confirmingDelete && setEditing(true)}
       {...attributes}
       {...listeners}
     >
       <div className="kanban-card-header">
         <span className="kanban-card-title">{card.title}</span>
-        <button
-          type="button"
-          className="card-delete"
-          aria-label={`Delete ${card.title}`}
-          // Keep pointerdown from reaching the card's drag listeners: otherwise
-          // the synchronous window.confirm below interrupts an in-progress dnd-kit
-          // pointer interaction, stranding its document-level selection/click
-          // listeners and leaving every text input unusable ("readonly").
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (window.confirm(`Delete card "${card.title}"?`)) onDelete(card.id);
-          }}
-        >
-          ×
-        </button>
+        {confirmingDelete ? (
+          // In-app confirmation instead of window.confirm(): a native modal
+          // interrupts dnd-kit's in-progress pointer interaction, stranding its
+          // document-level selection/click listeners and leaving every text input
+          // unusable ("readonly"). Stop pointer/click events here from reaching the
+          // card's drag listeners and edit handler.
+          <div
+            className="card-delete-confirm"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="card-delete-confirm-yes"
+              aria-label={`Confirm delete ${card.title}`}
+              onClick={() => onDelete(card.id)}
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setConfirmingDelete(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="card-delete"
+            aria-label={`Delete ${card.title}`}
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmingDelete(true);
+            }}
+          >
+            ×
+          </button>
+        )}
       </div>
       {card.description && <p className="kanban-card-description">{card.description}</p>}
       {card.due_date && (

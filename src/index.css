@@ -514,6 +514,25 @@ h1, h2, h3 {
   color: var(--color-danger);
 }
 
+.card-delete-confirm {
+  display: flex;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.card-delete-confirm button {
+  font-size: var(--font-size-sm);
+  padding: 2px var(--space-2);
+}
+
+.card-delete-confirm-yes {
+  background: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  cursor: pointer;
+}
+
 .kanban-add-card {
   background: none;
   border: 1px dashed var(--border-subtle);
