@@ -3,6 +3,16 @@
 All notable changes to this project are documented in this file.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.3.1] - 2026-07-01
+
+- Fixed a bug where deleting a card left every text box on the board
+  unusable (appearing read-only), blocking edits to other cards and the
+  adding of new ones. The card's delete button sat inside the card's
+  drag area, so its confirmation dialog interrupted an in-progress
+  drag-and-drop pointer interaction and stranded dnd-kit's global
+  selection/click listeners. The delete button no longer engages the
+  drag sensor.
+
 ## [1.3.0] - 2026-06-25
 
 - Added a macOS packaging target (`npm run package:mac` → DMG installer,
