@@ -104,6 +104,7 @@ function SortableColumnItem({
   onRenameKeyDown,
   onDelete,
 }: SortableColumnItemProps) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: columnSortableId(column.id),
   });
@@ -132,14 +133,37 @@ function SortableColumnItem({
         ) : (
           <h3 onDoubleClick={() => onStartRename(column)}>{column.name}</h3>
         )}
-        <button
-          type="button"
-          className="column-delete"
-          aria-label={`Delete ${column.name}`}
-          onClick={() => onDelete(column)}
-        >
-          ×
-        </button>
+        {confirmingDelete ? (
+          // In-app confirmation instead of window.confirm(): a native modal can
+          // interrupt an in-progress dnd-kit pointer interaction and leave text
+          // inputs unusable. See CardItem for the full explanation.
+          <div className="delete-confirm">
+            <button
+              type="button"
+              className="delete-confirm-yes"
+              aria-label={`Confirm delete ${column.name} and its cards`}
+              onClick={() => onDelete(column)}
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => setConfirmingDelete(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="column-delete"
+            aria-label={`Delete ${column.name}`}
+            onClick={() => setConfirmingDelete(true)}
+          >
+            ×
+          </button>
+        )}
       </div>
       {children}
     </div>
@@ -208,9 +232,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
   }
 
   function handleDeleteColumn(column: Column) {
-    if (window.confirm(`Delete column "${column.name}"? Cards inside it will be deleted too.`)) {
-      deleteColumn(column.id);
-    }
+    deleteColumn(column.id);
   }
 
   function handleDragStart(event: DragStartEvent) {

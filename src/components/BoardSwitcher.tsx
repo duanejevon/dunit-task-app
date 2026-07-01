@@ -49,6 +49,7 @@ function SortableBoardItem({
   onSetIcon,
   onBrowseIcon,
 }: SortableBoardItemProps) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: board.id,
   });
@@ -84,14 +85,37 @@ function SortableBoardItem({
           {board.name}
         </button>
       )}
-      <button
-        type="button"
-        className="board-delete"
-        aria-label={`Delete ${board.name}`}
-        onClick={() => onDelete(board)}
-      >
-        ×
-      </button>
+      {confirmingDelete ? (
+        // In-app confirmation instead of window.confirm(): a native modal can
+        // interrupt an in-progress dnd-kit pointer interaction and leave text
+        // inputs unusable. See CardItem for the full explanation.
+        <div className="delete-confirm">
+          <button
+            type="button"
+            className="delete-confirm-yes"
+            aria-label={`Confirm delete ${board.name}`}
+            onClick={() => onDelete(board)}
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="board-delete"
+          aria-label={`Delete ${board.name}`}
+          onClick={() => setConfirmingDelete(true)}
+        >
+          ×
+        </button>
+      )}
     </li>
   );
 }
@@ -146,9 +170,7 @@ export function BoardSwitcher({
   }
 
   function handleDelete(board: Board) {
-    if (window.confirm(`Delete board "${board.name}"? This cannot be undone.`)) {
-      onDelete(board.id);
-    }
+    onDelete(board.id);
   }
 
   function handleDragEnd(event: DragEndEvent) {

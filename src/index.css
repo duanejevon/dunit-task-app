@@ -514,6 +514,25 @@ h1, h2, h3 {
   color: var(--color-danger);
 }
 
+.delete-confirm {
+  display: flex;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.delete-confirm button {
+  font-size: var(--font-size-sm);
+  padding: 2px var(--space-2);
+}
+
+.delete-confirm-yes {
+  background: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  cursor: pointer;
+}
+
 .kanban-add-card {
   background: none;
   border: 1px dashed var(--border-subtle);
@@ -627,7 +646,7 @@ button {
   border-radius: var(--radius-sm);
 }
 
-button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger, .board-icon-trigger, .board-icon-option, .add-trigger) {
+button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger, .board-icon-trigger, .board-icon-option, .add-trigger, .delete-confirm-yes) {
   background: var(--color-accent);
   color: #fff;
   border: none;
@@ -636,7 +655,7 @@ button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add
   transition: background-color 0.15s ease;
 }
 
-button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger, .board-icon-trigger, .board-icon-option, .add-trigger):hover {
+button:not(.board-name, .board-delete, .column-delete, .card-delete, .kanban-add-card, .card-form-due-clear, .color-swatch, .btn-secondary, .background-thumb, .background-thumb-browse, .app-menu-trigger, .board-icon-trigger, .board-icon-option, .add-trigger, .delete-confirm-yes):hover {
   background: var(--color-accent-hover);
 }
 
