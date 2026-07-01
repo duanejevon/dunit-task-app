@@ -7,11 +7,11 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 - Fixed a bug where deleting a card left every text box on the board
   unusable (appearing read-only), blocking edits to other cards and the
-  adding of new ones. The card's delete button sat inside the card's
-  drag area, so its confirmation dialog interrupted an in-progress
-  drag-and-drop pointer interaction and stranded dnd-kit's global
-  selection/click listeners. The delete button no longer engages the
-  drag sensor.
+  adding of new ones. Deleting a card used a native `window.confirm()`
+  dialog, whose modal interrupted the card's in-progress drag-and-drop
+  pointer interaction and stranded dnd-kit's global selection/click
+  listeners. Card deletion now uses an inline in-app confirmation
+  instead of the native dialog, which removes the root cause.
 
 ## [1.3.0] - 2026-06-25
 
